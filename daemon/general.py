@@ -1,11 +1,11 @@
+import asyncio
 from aioredis import Redis, ConnectionPool
+from channels.layers import get_channel_layer
+from typing import List, TypeVar
 from . import settings, Location
 from .handlers import RedisStreamHandler
-from typing import List, TypeVar
 from .filler import maps_filler
-from channels.layers import get_channel_layer
-import asyncio
-import time
+from .actions import ActionsDaemon
 
 C = TypeVar("C", bound="Controller")
 
@@ -15,6 +15,7 @@ class Controller():
         self.redis: Redis
         self.stream_names: List[str]
         self.stream_handlers: List[RedisStreamHandler] = list()
+        self.daemons: List[ActionsDaemon]
         self.queue: asyncio.Queue = asyncio.Queue()
 
     def redis_connect(self: C) -> C:
@@ -39,14 +40,22 @@ class Controller():
 
     def add_handlers(self: C) -> C:
 
-        async def inner():
+        def redis_handler():
+            channel_layer = get_channel_layer()
             for map in maps:
-                stream_handler = RedisStreamHandler(map.id, channel_layer)
+                stream_handler = RedisStreamHandler(map.id, channel_layer, self.redis)
+                stream_handler.start_listening()
                 self.stream_handlers.append(stream_handler)
 
+        def daemon_actions():
+            for map in maps:
+                daemon = ActionsDaemon(self.redis, map)
+                daemon.start_daemon()
+                self.daemons.append(daemon)
+
         maps = Location.objects.all()
-        channel_layer = get_channel_layer()
-        self.queue.put(inner())
+        redis_handler()
+        daemon_actions()
         return self
 
 def main_service():

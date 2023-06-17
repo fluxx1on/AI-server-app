@@ -1,4 +1,4 @@
-from aioredis import Redis, ConnectionPool
+from redis import Redis, ConnectionPool
 from django.conf import settings
 
 # Short-live substances

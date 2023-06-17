@@ -1,14 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
+from typing import List
 
 class Creature(models.Model):
 
     @staticmethod
-    def redis_serializer():
-        return [
-            'id', 'health', 'attack'
-        ]
+    def redis_serializer() -> tuple:
+        return ('id', 'health', 'attack')
 
     class friendship(models.IntegerChoices):
         peaceful = 0, _("Peaceful")
@@ -56,6 +55,46 @@ class User(AbstractBaseUser):
 
     def __str__(self) -> str:
         return self.nickname
+
+    class Meta:
+        verbose_name = "Player"
+        verbose_name_plural = "Players"
+
+class FightLog(models.Model):
+
+    created_at = models.DateTimeField('Ended', auto_created=True)
+    result = models.JSONField('Result', null=True, blank=True)
+
+    players = models.ManyToManyField(
+        User, verbose_name='Players', related_name='fights', 
+        null=True, blank=True
+    )
+
+    mobs = models.ManyToManyField(
+        Creature, verbose_name='Mobs', null=True, blank=True
+    )
+
+    location = models.ForeignKey(
+        Location, verbose_name="Location", related_name='fights_on_map',
+        null=True, blank=True
+    )
+
+    def serialize(
+        self, opposites: dict, map_id: int,
+        mobs_stats : List[dict]
+    ) -> None:
+        try:
+            player = User.objects.get(pk=opposites['human1'])
+            location = Location.objects.get(pk=map_id)
+        except Exception as exc:
+            raise ValueError('Неподходящие данные') from exc
+        
+        self.players.add(*[player])
+        self.save()
+        
+
+    def __str__(self) -> str:
+        return self.created_at
 
     class Meta:
         verbose_name = "Player"

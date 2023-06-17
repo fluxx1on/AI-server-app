@@ -9,7 +9,7 @@ class RedisStreamHandler:
         channel_layer: RedisChannelLayer, 
         redis: Redis
     ):
-        self.stream_name = stream_name,
+        self.stream_name: str = stream_name,
         self.channel_layer: RedisChannelLayer = channel_layer,
         self.redis: Redis = redis
 

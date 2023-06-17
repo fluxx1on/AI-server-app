@@ -12,28 +12,31 @@ def hset_getattr(obj: object) -> dict:
     return hasher
 
 MAX_ON_MAP = 20
+CHUNK = asyncio.Semaphore(100)
 
 async def _hset(
     redis: Redis, mapping: dict, 
     map_id: int, mob_id: int    
 ):
     try:
-        await redis.hset(name=f"map:{str(map_id)}:mob_id:{str(mob_id)}", mapping=mapping)
+        await redis.hset(name=f"map:{str(map_id)}:mob:{str(mob_id)}", mapping=mapping)
     except Exception as exc:
         raise ConnectionError("Redis shutted down") from exc
     
 async def _xadd(redis: Redis, map_id: int):
-    await redis.xadd(name=str(map_id), fields=dict())
+    try:
+        await redis.xadd(name=f"map:{str(map_id)}", fields=dict())
+    except Exception as exc:
+        raise ConnectionError("Redis shutted down") from exc
     
-async def limited_coroutine(chunk, task: Coroutine):
-    async with chunk:
+async def limited_coroutine(task: Coroutine):
+    async with CHUNK:
         await task()
 
 # Initialize Streams and Mobs 
 async def maps_filler(redis: Redis):
     maps = Location.objects.all()
     tasks = []
-    semaphore = asyncio.Semaphore(100)
     for map in maps:
         task = asyncio.create_task(
             _xadd(redis, map.id)
@@ -48,5 +51,5 @@ async def maps_filler(redis: Redis):
                     _hset(redis, mapping, map.id, mob)
                 )
                 tasks.append(task)
-    await asyncio.gather(*[limited_coroutine(semaphore, task) for task in tasks])
+    await asyncio.gather(*[limited_coroutine(task) for task in tasks])
 
