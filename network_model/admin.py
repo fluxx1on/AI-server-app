@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import User, Location, Creature
 
-# Register your models here.
+admin.register(User)
+admin.register(Location)
+admin.register(Creature)

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'channels'
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -65,10 +67,15 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # Имя вашей базы данных PostgreSQL
+        'USER': 'lunkli',  # Имя пользователя базы данных
+        'PASSWORD': 'necko700922', 
+        'HOST': 'postgresql',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
@@ -106,21 +113,57 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'network_model/static/')
+
+# Media files (Image/Video/Text files)
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'network_model/media/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
-SENDGRID_API_KEY = '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'
-DEFAULT_FROM_EMAIL = 'ai.corporative.postman@gmail.com' # ваш email
+DEFAULT_FROM_EMAIL = 'ai.corporative.postman@gmail.com'
 
-BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://celery_influencer:celery9451@localhost:5672//')
-CELERY_RESULT_BACKEND = 'rpc://'
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+BROKER_URL = 'redis://localhost:6379/1'  # URL для подключения к Redis в качестве брокера сообщений Celery
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'  # URL для подключения к Redis в качестве хранилища результатов задач Celery
+# REDIS_DB = {
+#     'HOST': 'localhost',
+#     'PORT': '6379',
+#     'DB': '3'
+# }
+REDIS_DB = 'redis://localhost:6379/3'  # Хранение short-live сущностей (мобы) и стримы
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+            "db": 4,  # Номер базы данных Redis
+        },
+    },
+}
+
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = TIME_ZONE
+
+ADMIN_URL_PATH = 'admin/'
+
+from .threading import *
+from redis_connection import *

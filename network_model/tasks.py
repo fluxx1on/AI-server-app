@@ -1,8 +1,6 @@
 from celery import shared_task
-from django.core.mail import EmailMessage
-from server.settings import DEFAULT_FROM_EMAIL
-
+from . import celery_app, redis_conn
 
 @shared_task
 def send_email():
-    
+    pass
