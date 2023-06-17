@@ -1,0 +1,206 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+    background-size: cover;
+    background-color: #1f1f1f;
+}
+
+.input_container {
+    background-color: rgb(49, 49, 49);
+    border-radius: 20px;
+    width: 50%;
+    margin: auto;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+}
+
+.leftside, .rightside {
+    height: 500px;
+    margin: auto;
+    position: relative;
+}
+
+.leftside { 
+    width: 48%;
+}
+.rightside { 
+    width: 48%;
+}
+
+.combat { 
+    justify-content: space-between;
+    align-items: center; 
+    margin-top: 5%; 
+    width: 100%;
+}
+
+.image {
+    margin:auto;
+}
+
+.image img {
+    width: 100%; 
+}
+
+.fieldset {
+    justify-content: center;
+    width: 80%;
+    margin-inline: auto;
+}
+
+.fieldset input[type=radio] {
+    display: none;
+}
+
+.fieldset label {
+    width: 50%;
+    height: 40px;
+    background-color: cadetblue;
+    border-inline: 1px solid azure;
+    border-block: 2px solid azure;
+    user-select: none;
+    margin-top:10%;
+    cursor: pointer;
+    z-index: 3;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s;
+}
+
+.fieldset label:nth-child(2) {
+    border-radius: 20px 0px 0px 20px;
+    border-left-width: 2px;
+}
+
+.fieldset label:nth-last-child(1) {
+    border-radius: 0px 20px 20px 0px;
+    border-right-width: 2px;
+}
+
+.fieldset input[type=radio]:checked + label{
+    background-color: coral;
+    width: 66%;
+}
+
+
+.bgvideo {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    z-index: -9999;
+  }
+
+.aspect {
+    background: radial-gradient(circle at 50% 60%, rgba(201, 201, 201, 0.918), rgba(115, 128, 136, 0.945));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 180%; 
+    margin-top: 3%;
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(2px 2px 1px black) drop-shadow(-1px 2px 1px black);
+}
+
+.tribute {
+    margin-block: auto;
+    align-items: center;
+    margin-left: 15%;
+}
+
+.as {
+    margin: auto;
+    align-items: center;
+}
+
+.strelkam, .strelkap {
+    cursor: pointer;
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+    background-color: azure;
+    letter-spacing: -1px;
+    font-size: 20px;
+    font-weight: 900;
+    color: black;
+    margin: auto;
+}
+
+.fznak {
+    margin: auto;
+}
+
+.double {
+    width: 30px;
+}
+
+.strelkam {
+    margin-inline-end: 10px;
+}
+.strelkap {
+    margin-inline-start: 10px;
+}
+
+input[type=number] {
+    display: none;
+}
+
+.spacer {
+    width: 0.5%; 
+    height: 400px; 
+    margin: auto;
+    margin-top: 24px;
+    background-color: cornsilk;
+    border-radius: 10px;
+}
+
+.pi {
+    font-size: 20px;
+    font-weight: 700;
+    width: 40px;
+    height: 25px;
+    border-radius: 20px;
+    background-color: azure;
+    align-items: center;
+    justify-content: center;
+}
+
+.submit {
+    margin-left: 75%;
+    width: 18%;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    z-index: 3;
+}
+
+.freepoints {
+    white-space: nowrap;
+    font-size: 14px;
+    color: cornsilk;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.flex {
+    display: flex;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.row {
+    flex-direction: row;
+}

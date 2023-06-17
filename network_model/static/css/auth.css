@@ -1,0 +1,103 @@
+html, body {
+    background-color: #1f1f1f;
+    height: 100%;
+    overflow: hidden;
+}
+
+.front {
+    width: 100%; height: 733px;
+    background-color: transparent;
+}
+
+.contain_world {
+    margin: auto;
+    height: 100%;
+    width: 40%;
+    flex-direction: column;
+}
+
+.logo_container {
+    width: 100%;
+}
+
+.logo {
+    margin: auto;
+}
+
+.input_container {
+    background-color: rgb(49, 49, 49);;
+    border-radius: 20px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.typefield {
+    font-size: 15px;
+    font-family: Tahoma;
+    padding-left: 3%;
+    margin-top: 1.8%;
+    height: 36px;
+    width: 84%;
+    border-radius: 30px;
+    border-style: none;
+    outline: none;
+    background-color: #1a1a1a;
+    color: rgb(164, 164, 185);
+    border: 2px solid rgba(0, 0, 0, 0.850);
+    transition: all 0.5s;
+}
+
+.typefield:hover {
+    border: 2px solid ivory;
+}
+.typefield:focus {
+    border: 2px solid rgba(74, 63, 235, 0.836);
+}
+
+
+.sign {
+    font-size: 160%;
+    background: linear-gradient(175deg,
+     rgba(16, 214, 128, 1) 30%, rgba(24, 143, 223, 1));
+    cursor: pointer;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+.sign:hover {
+    filter: drop-shadow(2px 2px 2px black);
+}
+
+.aspect {
+    background: radial-gradient(circle at 50% 60%, rgba(201, 201, 201, 0.918), rgba(115, 128, 136, 0.945));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 180%; 
+    margin-top: 3%;
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    pointer-events: none;
+    filter: drop-shadow(2px 2px 1px black) drop-shadow(-1px 2px 1px black);
+}
+
+.submit {
+    margin-right: 15%;
+    width: 100px;
+    height: 40px;
+    cursor: pointer;
+    background-color: bisque;
+    border-radius: 10px;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.flex {
+    display: flex;
+}

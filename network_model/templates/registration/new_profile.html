@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <title>Character</title>
+    <link rel="stylesheet" href="{% static 'css/newprofile.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+</head>
+<body class='flex' oncontextmenu="return false;">
+    <form method='POST' class="input_container flex" action=''>
+        {% csrf_token %}
+        <div class="flex aspect">Creation</div>
+        <div class='flex row' style="width: 100%; padding-inline: auto;">
+            <div class='flex column leftside'>
+                <div class='flex row fieldset'>
+                    <input id="male" type="radio" name="radio" value="male" class='radiobox' checked>
+                    <label for='male' class='flex'>Мужчина</label>
+                    <input id="female" type="radio" name="radio" class="radiobox" value="female">
+                    <label for='female' class='flex'>Женщина</label>
+                </div>
+                <div class='flex row fieldset'>
+                    <input id="sword" type="radio" name="weapon" value="sword" class='radiobox' checked>
+                    <label for='sword' class='flex'>Меч</label>
+                    <input id="spear" type="radio" name="weapon" class="radiobox" value="spear">
+                    <label for='spear' class='flex'>Копье</label>
+                    <input id="axe" type="radio" name="weapon" class="radiobox" value="axe">
+                    <label for='axe' class='flex'>Топор</label>
+                </div>
+                <div class='image'>
+                    <img src="{% static 'img/severine-dumagny.png' %}" alt="">
+                </div>
+            </div>
+            <div class='flex spacer'></div>
+            <div class='flex column rightside'>
+                <div class='flex row' style='height: 400px; margin-top: 5%;'>
+                    <div class='flex column leftside' style='height: 100%; margin-left: 0%; width:20%;'>
+                        {% for i in array %}
+                            <div class='tribute'>{{ i }}</div>
+                            {% if i == 'Стойкость' %}
+                                <div class='freepoints' style="margin-left: 15%;">Свободных очков:</div>
+                            {% endif %}
+                            {% if i == 'Блок' %}
+                                <div class='freepoints' style='margin-left: 15%;'>Свободных очков:</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class='flex column rightside' style='height: 100%; margin-right: 10%;'>
+                        {% for i in array %}
+                            <div class='flex row as'>
+                                <div class='flex strelkam double'><div class='flex fznak'><<</div></div>
+                                <div class='flex strelkam'><div class='flex fznak' style="margin-top: -2.5px;">-</div></div>
+                                <input readonly name='{{ i }}' class='flex pi' type="number">
+                                <label class='flex pi'></label>
+                                <div class='flex strelkap'><div class='flex fznak'>+</div></div>
+                                <div class='flex strelkap double'><div class='flex fznak'>>></div></div>
+                            </div>
+                            {% if i == 'Стойкость' %}
+                                <div class='freepoints' id='13'>0</div>
+                            {% endif %}
+                            {% if i == 'Блок' %}
+                                <div class='freepoints' id='46'>0</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class='flex combat' >
+                    <input type="submit" class='submit flex' value="ENTER">
+                </div>
+            </div>
+        </div>
+    </form>
+    <div>{{ user.username }}</div>
+</body>
+<script type="text/javascript" src="{% static 'js/newprofile.js' %}"></script>
+</html>
