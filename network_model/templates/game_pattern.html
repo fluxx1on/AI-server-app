@@ -1,0 +1,38 @@
+{% load static %}
+<div class='up_container'>
+    <div class='personal'>
+        <div class='avatar'>
+            <img class='ava' src="{% static 'img/severine-dumagny.png' %}" alt="">
+            <div class='profile_container'>
+                <div class='scale'>{{ user.experience }}</div>
+                <div class='scale'>{{ user.durability_now }}/{{ user.durability }}</div>
+                <div class='scale'>{{ user.energy_now }}/{{ user.energy }}</div>
+                <div class='balance'></div>
+            </div>
+        </div>
+    </div>
+    <div class='menu'>
+        <div class='main'>
+            <div class='el'>Локация</div>
+            <div class='el'>Персонаж</div>
+            <div class='el'>Гильдия</div>
+            <div class='el'>Рейтинг</div>
+            <div class='el'>Похуй</div>
+        </div>
+        <div class='sub'>
+            <div class='el'><a class='webkit' href="">Главная</a></div>
+            <div class='el'><a class='webkit' href="{% url 'hunting' %}">Охота</a></div>
+            <div class='el'><a class='webkit' href="">{{ user.weapon_equip }}</a></div>
+            <div class='el'><a class='webkit' href="">Похуй</a></div>
+            <div class='el'><a class='webkit' href="">Похуй</a></div>
+            <div class='el'><a class='webkit' href="">Похуй</a></div>
+        </div>
+    </div>
+    <div class='helpOr'>
+        <div class='assets'>
+            <a href="" class='help' ><img src="{% static 'img/cross.svg' %}" alt=""></a>
+            <a href="" class='help' ><img src="{% static 'img/cross.svg' %}" alt=""></a>
+            <a href="" class='help' ><img src="{% static 'img/cross.svg' %}" alt=""></a>
+        </div>
+    </div>
+</div>

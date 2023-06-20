@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
-from typing import List
+from typing import List, Literal
+from server import settings
 
 class Creature(models.Model):
 
@@ -32,12 +33,17 @@ class Creature(models.Model):
 
 class Location(models.Model):
 
+    @staticmethod
+    def format() -> tuple[Literal, Literal]:
+        return settings.MAP_FORMAT   # (X, Y)
+
+
     name = models.CharField("Name", max_length=63, unique=True)
     description = models.CharField("Description", max_length=511, unique=True)
     background = models.FileField("Map Image", upload_to='./media/')
 
     allowed_creatures = models.ManyToManyField(
-        Creature, description="Ocurred mobs for this location", related_name="residence"
+        Creature, help_text="Ocurred mobs for this location", related_name="residence"
     )
 
     def __str__(self) -> str:
@@ -66,17 +72,16 @@ class FightLog(models.Model):
     result = models.JSONField('Result', null=True, blank=True)
 
     players = models.ManyToManyField(
-        User, verbose_name='Players', related_name='fights', 
-        null=True, blank=True
+        User, verbose_name='Players', related_name='fights'
     )
 
     mobs = models.ManyToManyField(
-        Creature, verbose_name='Mobs', null=True, blank=True
+        Creature, verbose_name='Mobs'
     )
 
     location = models.ForeignKey(
         Location, verbose_name="Location", related_name='fights_on_map',
-        null=True, blank=True
+        on_delete=models.CASCADE
     )
 
     def serialize(
@@ -97,5 +102,5 @@ class FightLog(models.Model):
         return self.created_at
 
     class Meta:
-        verbose_name = "Player"
-        verbose_name_plural = "Players"
+        verbose_name = "Fight"
+        verbose_name_plural = "Fights"

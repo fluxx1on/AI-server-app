@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import User, Location, Creature
+from .models import *
 
-admin.register(User)
-admin.register(Location)
-admin.register(Creature)
+admin.site.register(User)
+admin.site.register(Location)
+admin.site.register(Creature)
+admin.site.register(FightLog)

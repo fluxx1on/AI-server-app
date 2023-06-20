@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -38,7 +39,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'channels'
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -71,7 +71,7 @@ DATABASES = {
         'NAME': 'postgres',  # Имя вашей базы данных PostgreSQL
         'USER': 'lunkli',  # Имя пользователя базы данных
         'PASSWORD': 'necko700922', 
-        'HOST': 'postgresql',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -150,8 +150,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
-            "db": 4,  # Номер базы данных Redis
+            "hosts": [("localhost", 6379, 4)],
         },
     },
 }
@@ -164,6 +163,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
 ADMIN_URL_PATH = 'admin/'
+
+MAP_FORMAT = 800, 800   # X, Y
 
 from .threading import *
 from redis_connection import *

@@ -12,7 +12,8 @@ class AuthView(View):
 
     def post(self, request):
         data = {}
-        
+        email = str(request.POST.get('email'))
+        password = str(request.POST.get('password'))
         return render(request, 'auth.html', context=data)
 
 

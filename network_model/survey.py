@@ -1,8 +1,6 @@
 import asyncio
 from typing import List, TypeVar
 from . import redis_client
-from .models import FightLog
-from .consumers import MapUpdatesConsumer
 
 def get_fight_fr(
     map_id: str | int,
@@ -24,11 +22,11 @@ def get_mob_fr(
 class Battle:
      
     def __init__(
-        self, consumer: MapUpdatesConsumer, mob_id: int
+        self, consumer, mob_id: int
     ) -> None:
         # Wait for PvP
         # self.consumers: List[MapUpdatesConsumer] = [consumer]
-        self.consumer: MapUpdatesConsumer = consumer
+        self.consumer = consumer
         self.mobs_id: List[int] = [mob_id]
         self.fight_id: int
         self.postinit()
@@ -54,6 +52,7 @@ class Battle:
         pass
 
     def __del__(self) -> None:
+        from .models import FightLog
         pipeline = redis_client.pipeline()
         pipeline.hgetall(get_fight_fr(self.consumer.map_id, self.fight_id))
         for mob_id in self.mobs_id:

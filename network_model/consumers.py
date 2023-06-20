@@ -15,7 +15,7 @@ class MapUpdatesConsumer(AsyncWebsocketConsumer):
     # Create a connection. group_name received from client JS script
     async def connect(self):
         try:
-            self.map_id = int(self.scope['map_id'])
+            self.map_id = int(self.scope['url_route']['kwargs']['map_id'])
             self.user_id = int(self.scope['user_id'])
         except Exception as exc:
             raise RuntimeError("Something went wrong with connect on MapUpdatesConsumer") from exc
