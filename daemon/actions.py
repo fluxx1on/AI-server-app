@@ -39,22 +39,23 @@ class ActionsDaemon:
 
             pipeline = self.redis.pipeline()
             mob_list_message =  MobList()
-            for index in range(len(ids)):
+            for index, id in  enumerate(ids):
                 x = None
                 y = None
                 if bool(int(mobs[index][b'in_battle'])) == False:
                     position_x, position_y = int(mobs[index][b'position_x']), int(mobs[index][b'position_y'])
                     x, y = get_new_coords(position_x, position_y)
-                    pipeline.hmset(ids[index].decode(), {
+                    pipeline.hmset(id.decode(), {
                         'position_x': x, 'position_y': y
                     })
 
                 mob_message = mob_list_message.mobs.add()
-                mob_message.id = int(ids[index].decode().split(':')[-1])     
+                mob_message.id = int(id.decode().split(':')[-1])     
                 mob_message.health = int(mobs[index][b'health'])
                 mob_message.position_x = x if x is not None else int(mobs[index][b'position_x'])
                 mob_message.position_y = y if y is not None else int(mobs[index][b'position_y'])
                 mob_message.in_battle = bool(mobs[index][b'in_battle'])
+                mob_message.parent_id = int(mobs[index][b'id'])
 
             serialized_data = mob_list_message.SerializeToString()
             pipeline.xadd(f'map:{str(self.map.id)}', fields={'message': serialized_data})

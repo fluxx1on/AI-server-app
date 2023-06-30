@@ -1,4 +1,6 @@
+.vscode
 black_hole
 venv
+node_modules
+package-lock.json
 *.pyc
-.vscode/settings.json

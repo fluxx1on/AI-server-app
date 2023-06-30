@@ -32,22 +32,6 @@ html, body {
     align-items: center;
 }
 
-.typefield {
-    font-size: 15px;
-    font-family: Tahoma;
-    padding-left: 3%;
-    margin-top: 1.8%;
-    height: 36px;
-    width: 84%;
-    border-radius: 30px;
-    border-style: none;
-    outline: none;
-    background-color: #1a1a1a;
-    color: rgb(164, 164, 185);
-    border: 2px solid rgba(0, 0, 0, 0.850);
-    transition: all 0.5s;
-}
-
 .typefield:hover {
     border: 2px solid ivory;
 }
@@ -100,4 +84,23 @@ html, body {
 
 .flex {
     display: flex;
+}
+
+/* Forms */
+
+.typefield {
+    display: flex;
+    font-size: 15px;
+    font-family: Tahoma;
+    padding-left: 3%;
+    margin-top: 1.8%;
+    height: 36px;
+    width: 84%;
+    border-radius: 30px;
+    border-style: none;
+    outline: none;
+    background-color: #1a1a1a;
+    color: rgb(164, 164, 185);
+    border: 2px solid rgba(0, 0, 0, 0.850);
+    transition: all 0.5s;
 }

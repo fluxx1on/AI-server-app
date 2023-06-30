@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'channels'
+    'channels',
+    'channels_redis'
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,8 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'server.asgi.application'
+
 WSGI_APPLICATION = 'server.wsgi.application'
 
 
@@ -68,8 +71,8 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # Имя вашей базы данных PostgreSQL
-        'USER': 'lunkli',  # Имя пользователя базы данных
+        'NAME': 'postgres',
+        'USER': 'superuser',
         'PASSWORD': 'necko700922', 
         'HOST': 'localhost',
         'PORT': '5432',
@@ -81,20 +84,25 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+LOGIN_URL = '/'
+
+AUTH_USER_MODEL = 'network_model.User'
+
+
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
 
 
 # Internationalization
@@ -139,18 +147,14 @@ CACHES = {
 
 BROKER_URL = 'redis://localhost:6379/1'  # URL для подключения к Redis в качестве брокера сообщений Celery
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'  # URL для подключения к Redis в качестве хранилища результатов задач Celery
-# REDIS_DB = {
-#     'HOST': 'localhost',
-#     'PORT': '6379',
-#     'DB': '3'
-# }
+
 REDIS_DB = 'redis://localhost:6379/3'  # Хранение short-live сущностей (мобы) и стримы
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379, 4)],
+            "hosts": ['redis://localhost:6379/4'],
         },
     },
 }
@@ -167,4 +171,3 @@ ADMIN_URL_PATH = 'admin/'
 MAP_FORMAT = 800, 800   # X, Y
 
 from .threading import *
-from redis_connection import *

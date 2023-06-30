@@ -1,5 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from . import redis_client, Battle
+from network_model.models import User
 
 class MapUpdatesConsumer(AsyncWebsocketConsumer):
     """
@@ -8,7 +8,7 @@ class MapUpdatesConsumer(AsyncWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         self.map_id: int
-        self.user_id: int
+        self.user: User
         self.group_name: str
         super().__init__(*args, **kwargs)
 
@@ -16,7 +16,8 @@ class MapUpdatesConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         try:
             self.map_id = int(self.scope['url_route']['kwargs']['map_id'])
-            self.user_id = int(self.scope['user_id'])
+            self.user = self.scope['user']
+            assert self.user.is_authenticated
         except Exception as exc:
             raise RuntimeError("Something went wrong with connect on MapUpdatesConsumer") from exc
         
@@ -25,7 +26,7 @@ class MapUpdatesConsumer(AsyncWebsocketConsumer):
             self.group_name,
             self.channel_name
         )
-        self.accept()
+        await self.accept()
 
     # Shutting down the connection
     async def disconnect(self, code):
@@ -41,5 +42,5 @@ class MapUpdatesConsumer(AsyncWebsocketConsumer):
         await self.send(response)
 
     # Send Stream to users
-    async def stream_sender(self, stream_data):
-        await self.send(stream_data)
+    async def stream_sender(self, stream_data: dict):
+        await self.send(bytes_data=stream_data['stream_data']) # bytes stream

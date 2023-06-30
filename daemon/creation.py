@@ -31,7 +31,7 @@ async def _hsetnx(
 
 @async_redis_method  
 async def _xadd(redis: Redis, map_id: int) -> None:
-    await redis.xadd(name=f"map:{str(map_id)}", fields={'message': 'initial'})
+    await redis.xadd(name=f"map:{str(map_id)}", fields={'message': ''})
 
     # UTILS
 
@@ -66,7 +66,7 @@ async def limited_creation_coroutine(task: Coroutine):
     async with CHUNK:
         await task
 
-# For ActionsDaemon
+# For unit auto-creating
 async def manual_creation(amount: int, redis: Redis, location: Location, related_mobs: List[Creature]) -> None:
     tasks = list()
     hash_key = f'map:{str(location.id)}:mob:'

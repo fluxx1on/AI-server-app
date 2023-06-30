@@ -9,7 +9,7 @@ async def maps_filler(redis: Redis):
     maps = Location.objects.all()
     tasks = []
     async for map in maps:
-        count = len(redis.keys(f'map:{map.id}:mob:*'))
+        count = len(await redis.keys(f'map:{map.id}:mob:*'))
         related_mobs = map.allowed_creatures.all()
         await manual_creation(
             amount=MAX_ON_MAP-count,

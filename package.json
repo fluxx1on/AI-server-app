@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "google-protobuf": "^3.21.2",
+    "protobufjs": "^7.2.3"
+  }
+}

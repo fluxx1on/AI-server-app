@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin
 from typing import List, Literal
+from network_model.managers import CustomUserManager
 from server import settings
 
 class Creature(models.Model):
@@ -40,7 +42,7 @@ class Location(models.Model):
 
     name = models.CharField("Name", max_length=63, unique=True)
     description = models.CharField("Description", max_length=511, unique=True)
-    background = models.FileField("Map Image", upload_to='./media/')
+    background = models.FileField("Map Image", upload_to='./')
 
     allowed_creatures = models.ManyToManyField(
         Creature, help_text="Ocurred mobs for this location", related_name="residence"
@@ -53,14 +55,36 @@ class Location(models.Model):
         verbose_name = "Map"
         verbose_name_plural = "Maps"
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
 
-    nickname = models.CharField("Nickname", max_length=24, unique=True)
+    username = models.CharField("Username", max_length=24, unique=True, null=False)
     health = models.IntegerField("Health", null=False, default=35)
     attack = models.IntegerField("Attack", null=False, default=5)
 
+    current_location = models.ForeignKey(
+        Location, verbose_name='Current location', on_delete=models.DO_NOTHING, null=True
+    )
+
+    is_staff = models.BooleanField(
+        _("staff status"),
+        default=False,
+        help_text=_("Designates whether the user can log into this admin site."),
+    )
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
+        ),
+    )
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "username"
+
     def __str__(self) -> str:
-        return self.nickname
+        return self.username
 
     class Meta:
         verbose_name = "Player"
@@ -81,7 +105,7 @@ class FightLog(models.Model):
 
     location = models.ForeignKey(
         Location, verbose_name="Location", related_name='fights_on_map',
-        on_delete=models.CASCADE
+        on_delete=models.DO_NOTHING
     )
 
     def serialize(

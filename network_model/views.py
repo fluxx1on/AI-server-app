@@ -1,34 +1,69 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import View
+from django.contrib.auth import login, authenticate, get_user
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from .models import *
+from .forms import *
 
 class AuthView(View):
 
     def get(self, request):
-        data = {}
-        
-        return render(request, 'auth.html', context=data)
+        user = get_user(request)
+        if user.is_authenticated:
+            return redirect('map')
+        data = {'form': LoginForm()}
+        return render(request, 'registration/auth.html', context=data)
 
     def post(self, request):
-        data = {}
-        email = str(request.POST.get('email'))
-        password = str(request.POST.get('password'))
-        return render(request, 'auth.html', context=data)
+        form = LoginForm(request.POST)
 
+        if form.is_valid():
+            form.clean()
+            user = form.get_user()
+            login(request, user)
+            return redirect('map')
+        else:
+            return render(request, 'registration/auth.html', {
+                'error_message': form.error_messages,
+                'form': form
+        })
+
+class RegView(View):
+
+    def get(self, request):
+        user = get_user(request)
+        if user.is_authenticated:
+            return redirect('map')
+        data = {'form': RegistrationForm()}
+        return render(request, 'registration/reg.html', context=data)
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            user = form.get_user()
+            login(request, user)  # Автоматический вход после регистрации
+            return redirect('map')  # Перенаправление на домашнюю страницу
+        else:
+            return render(request, 'registration/reg.html', context={
+                'error_message': form.error_messages,
+                'form': form
+            })
 
 class MapView(View):
     
     def get(self, request):
-        data = {}
+        data = {'map': Location.objects.get(pk=1)}
         
-        return render(request, 'map.html', context=data)
+        return render(request, 'map/map.html', context=data)
     
     def post(self, request):
         data = {}
         
-        return render(request, 'map.html', context=data)
+        return render(request, 'map/map.html', context=data)
     
-    @method_decorator(login_required)
+    @method_decorator(login_required('', ''))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)

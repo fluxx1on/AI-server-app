@@ -13,6 +13,7 @@ class RedisStreamHandler:
         self.stream_name: str = stream_name
         self.channel_layer = get_channel_layer()
         self.redis: Redis = redis
+        self.fstream: str = f'map:{self.stream_name}'
 
     async def listen_to_stream(self):
 
@@ -20,7 +21,7 @@ class RedisStreamHandler:
         
         while True:
             # Iterator creation from Redis Stream
-            stream_iterator = await self.redis.xread(streams={f'map:{self.stream_name}': last_id}, count=1)
+            stream_iterator = await self.redis.xread(streams={self.fstream: last_id}, count=1)
             try:
                 for message in stream_iterator[0][1]:
                     message_id = message[0]  # Unique Identificator
@@ -33,6 +34,7 @@ class RedisStreamHandler:
                         }
                     )
                     last_id = message_id.decode()
+                    await self.redis.xtrim(self.fstream, 5)
             except IndexError:
                 pass
             await asyncio.sleep(0.5)

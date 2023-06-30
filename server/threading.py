@@ -1,4 +1,3 @@
-import time
 from threading import Thread
 from daemon.general import main_service as service
 
