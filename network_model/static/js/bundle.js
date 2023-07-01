@@ -506,22 +506,46 @@ const mobMap = [];
 
 // AJAX
 
-$.ajax({
-  url: '/my-url', // Замените на свой URL-адрес
-  method: 'POST', // Замените на нужный метод (GET, POST и т.д.)
-  data: {
-    // Данные, которые вы хотите отправить на сервер
-    key1: 'value1',
-    key2: 'value2'
-  },
-  success: function(response) {
-    // Функция, которая будет выполнена при успешном завершении запроса
-    console.log(response);
-  },
-  error: function(xhr, status, error) {
-    // Функция, которая будет выполнена при ошибке запроса
-    console.log(error);
+// function getCookie(name) {
+//   var cookieValue = null;
+//   if (document.cookie && document.cookie !== '') {
+//     var cookies = document.cookie.split(';');
+//     for (var i = 0; i < cookies.length; i++) {
+//       var cookie = cookies[i].trim();
+//       if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//         break;
+//       }
+//     }
+//   }
+//   return cookieValue;
+// }
+
+function sendRespond(num) {
+  var csrftoken = document.cookie.split("=")[1];
+  console.log(csrftoken);
+  var jsonData = {
+    "mark": num
   }
+  $.ajax({
+    url: "http://localhost:8000/map/",
+    type: "POST",
+    data: JSON.stringify(jsonData),
+    contentType: "application/json",
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    },
+    success: function(response) {
+      console.log(response);
+    },
+    error: function(xhr, status, error) {
+      console.log(status + " " + error);
+    }
+  });
+}
+
+$(".rate").on("click", function(){
+  sendRespond($(this).find("p").text())
 });
 
 // WebSockets
@@ -585,7 +609,6 @@ function createImages() {
     img.style.left = obj.x + 'px';
     img.style.top = obj.y + 'px';
 
-    // Добавьте элемент <img> внутрь <div class="map">
     mapDiv.appendChild(img);
   })
 };
@@ -597,7 +620,7 @@ function smoothMove(element, x1, y1, x2, y2, duration = 4000) {
     if (!startTime) startTime = timestamp;
     const progress = timestamp - startTime;
 
-    const ease = easingFunction(progress / duration); // Функция плавности движения (может быть линейной или другой)
+    const ease = easingFunction(progress / duration);
 
     const currentX = x1 + (x2 - x1) * ease;
     const currentY = y1 + (y2 - y1) * ease;

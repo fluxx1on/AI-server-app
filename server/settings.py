@@ -145,8 +145,15 @@ CACHES = {
     }
 }
 
-BROKER_URL = 'redis://localhost:6379/1'  # URL для подключения к Redis в качестве брокера сообщений Celery
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'  # URL для подключения к Redis в качестве хранилища результатов задач Celery
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+# Redis Configuration
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 
 REDIS_DB = 'redis://localhost:6379/3'  # Хранение short-live сущностей (мобы) и стримы
 
@@ -159,14 +166,11 @@ CHANNEL_LAYERS = {
     },
 }
 
-
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-CELERY_TIMEZONE = TIME_ZONE
-
 ADMIN_URL_PATH = 'admin/'
+
+import logging
+
+logging.basicConfig(level=logging.INFO)  # Set the desired log level
 
 MAP_FORMAT = 800, 800   # X, Y
 

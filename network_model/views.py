@@ -1,3 +1,5 @@
+import json
+from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.views.generic import View
 from django.contrib.auth import login, authenticate, get_user
@@ -5,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import *
 from .forms import *
+from . import redis_client
 
 class AuthView(View):
 
@@ -61,7 +64,13 @@ class MapView(View):
     
     def post(self, request):
         data = {}
-        
+        user = get_user(request)
+        if user.is_authenticated:
+            request : HttpRequest = request
+            mark = json.loads(request.body).get('mark')
+            if not redis_client.setnx(f'rates:{user.id}', mark):
+                pass
+
         return render(request, 'map/map.html', context=data)
     
     @method_decorator(login_required('', ''))
